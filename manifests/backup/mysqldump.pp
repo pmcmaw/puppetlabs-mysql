@@ -51,6 +51,10 @@ class mysql::backup::mysqldump (
     require    => Mysql_user["${backupuser}@localhost"],
   }
 
+  package { 'cron':,
+    ensure => present,
+  }
+
   cron { 'mysql-backup':
     ensure  => $ensure,
     command => '/usr/local/sbin/mysqlbackup.sh',

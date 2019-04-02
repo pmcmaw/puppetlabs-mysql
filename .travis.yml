@@ -42,8 +42,7 @@ matrix:
       dist: trusty
       env: PUPPET6=travis_debTEST
       script:
-      - bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu16.04]'
-      - bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu18.04]'
+      -  bundle exec rake 'litmus:provision_list[travis_deb]'
       - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
       - bundle exec rake litmus:install_agent
       - bundle exec rake litmus:install_module

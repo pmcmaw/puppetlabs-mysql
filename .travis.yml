@@ -3,8 +3,6 @@ sudo: false
 dist: trusty
 language: ruby
 cache: bundler
-before_install:
-  - bundle -v
   - rm -f Gemfile.lock
   - gem update --system
   - gem --version
@@ -25,6 +23,7 @@ matrix:
       dist: trusty
       env: PUPPET6=debian:8_9
       script:
+      - install: travis_wait 40 mvn install
       - bundle exec rake 'litmus:provision[docker, waffleimage/debian8]'
       - bundle exec rake 'litmus:provision[docker, waffleimage/debian9]'
       - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
@@ -45,6 +44,7 @@ matrix:
       dist: trusty
       env: PUPPET5=debian:8_9
       script:
+      - install: travis_wait 40 mvn install
       - bundle exec rake 'litmus:provision[docker, waffleimage/debian8]'
       - bundle exec rake 'litmus:provision[docker, waffleimage/debian9]'
       - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
@@ -58,6 +58,7 @@ matrix:
       dist: trusty
       env: PUPPET5=centos:6_7
       script:
+      - install: travis_wait 40 mvn install
       - bundle exec rake 'litmus:provision[docker, waffleimage/centos6]'
       - bundle exec rake 'litmus:provision[docker, waffleimage/centos7]'
       - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'

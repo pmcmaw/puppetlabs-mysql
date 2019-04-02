@@ -27,7 +27,7 @@ matrix:
       - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
       - bundle exec rake litmus:install_agent
       - bundle exec rake litmus:install_module
-      - bundle exec rake litmus:acceptance:parallel
+      - travis_wait 40 bundle exec rake litmus:acceptance:parallel
       services: docker
       sudo: required
     -
@@ -46,7 +46,7 @@ matrix:
       - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
       - bundle exec rake litmus:install_agent
       - bundle exec rake litmus:install_module
-      - bundle exec rake litmus:acceptance:parallel
+      - travis_wait 40 bundle exec rake litmus:acceptance:parallel
       services: docker
       sudo: required
 branches:

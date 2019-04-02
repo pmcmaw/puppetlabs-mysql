@@ -40,9 +40,9 @@ matrix:
     -
       bundler_args:
       dist: trusty
-      env: PUPPET6=travis_deb
+      env: PUPPET6=travis_debTEST
       script:
-      - bundle exec rake 'litmus:provision_list[travis_deb]'
+      - bundle exec rake 'litmus:provision_list[travis_paula]'
       - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
       - bundle exec rake litmus:install_agent
       - bundle exec rake litmus:install_module

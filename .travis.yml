@@ -48,6 +48,17 @@ matrix:
       - travis_wait 40 bundle exec rake litmus:acceptance:parallel
       services: docker
       sudo: required
+    -
+      bundler_args:
+      dist: trusty
+      env: PUPPET6=paula_el
+      script:
+      - bundle exec rake 'litmus:provision_list[paula_el]'
+      - bundle exec rake litmus:install_agent
+      - bundle exec rake litmus:install_module
+      - travis_wait 40 bundle exec rake litmus:acceptance:parallel
+      services: docker
+      sudo: required
 branches:
   only:
     - master

@@ -49,9 +49,10 @@ matrix:
       script:
       - bundle exec rake -T
       - bundle exec rake 'litmus:provision[docker, waffleimage/centos6]'
+      - cat inventory.yaml
       - bundle exec rake litmus:install_agent
       - bundle exec rake litmus:install_module
-      - travis_wait 60 time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
+      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
       services: docker
       sudo: required
     -

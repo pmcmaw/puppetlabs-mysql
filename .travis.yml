@@ -148,7 +148,7 @@ matrix:
       dist: trusty
       env: PUPPET6=debian9
       script:
-      - bundle exec rake 'litmus:provision[docker, waffleimage/debian9]'
+      - bundle exec rake 'litmus:provision[docker, florindragos/debian9]'
       # - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
       - bundle exec rake litmus:install_agent
       - bundle exec rake litmus:install_module

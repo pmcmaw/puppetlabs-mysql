@@ -1,10 +1,11 @@
 ---
-sudo: false
 dist: trusty
 language: ruby
 cache: bundler
+before_install:
+  - bundle -v
   - rm -f Gemfile.lock
-  - gem update --system
+  - gem update --system $RUBYGEMS_VERSION
   - gem --version
   - bundle -v
 script:
@@ -14,80 +15,60 @@ rvm:
   - 2.5.1
 env:
   global:
-    - PUPPET6=debian9 PUPPET_GEM_VERSION="~> 6.0"
+    - PUPPET_GEM_VERSION="~> 6.0"
 matrix:
   fast_finish: true
   include:
     -
       bundler_args:
       dist: trusty
-      env: PUPPET6=scientificlinux6
+      env: PLATFORMS=deb_puppet5
+      rvm: 2.5.1
       script:
-      - bundle exec rake 'litmus:provision[docker, waffleimage/scientificlinux6]'
-      - bundle exec rake litmus:install_agent
+      - bundle exec rake 'litmus:provision_list[travis_deb]'
+      - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
+      - bundle exec rake 'litmus:install_agent[puppet5]'
       - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
+      - travis_wait 20 bundle exec rake litmus:acceptance:parallel
       services: docker
       sudo: required
     -
       bundler_args:
       dist: trusty
-      env: PUPPET6=scientificlinux7
+      env: PLATFORM=centos:deb_puppet6
+      rvm: 2.5.1
       script:
-      - bundle exec rake 'litmus:provision[docker, waffleimage/scientificlinux7]'
-      - bundle exec rake litmus:install_agent
-      - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
+      - time bundle exec rake 'litmus:provision_list[travis_deb]'
+      - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
+      - time bundle exec rake 'litmus:install_agent[puppet6]'
+      - time bundle exec rake litmus:install_module
+      - travis_wait 20 bundle exec rake litmus:acceptance:parallel
       services: docker
       sudo: required
     -
       bundler_args:
       dist: trusty
-      env: PUPPET6=oracle6
+      env: PLATFORMS=el_puppet5
+      rvm: 2.5.1
       script:
-      - bundle exec rake 'litmus:provision[docker, waffleimage/oraclelinux6]'
-      - bundle exec rake litmus:install_agent
+      - bundle exec rake 'litmus:provision_list[travis_el]'
+      - bundle exec rake 'litmus:install_agent[puppet5]'
       - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
+      - travis_wait 20 bundle exec rake litmus:acceptance:parallel
       services: docker
       sudo: required
     -
       bundler_args:
       dist: trusty
-      env: PUPPET6=oracle67
+      env: PLATFORM=centos:el_puppet6
+      rvm: 2.5.1
       script:
-      - bundle exec rake 'litmus:provision[docker, waffleimage/oraclelinux7]'
-      - bundle exec rake litmus:install_agent
+      - bundle exec rake 'litmus:provision_list[travis_el]'
+      - bundle exec rake 'litmus:install_agent[puppet6]'
       - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
+      - travis_wait 20 bundle exec rake litmus:acceptance:parallel
       services: docker
       sudo: required
-    -
-      bundler_args:
-      dist: trusty
-      env: PUPPET6=centos6
-      script:
-      - bundle exec rake -T
-      - bundle exec rake 'litmus:provision[docker, waffleimage/centos6]'
-      - cat inventory.yaml
-      - bundle exec rake litmus:install_agent
-      - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
-      services: docker
-      sudo: required
-    -
-      bundler_args:
-      dist: trusty
-      env: PUPPET6=centos7
-      script:
-      - bundle exec rake -T
-      - bundle exec rake 'litmus:provision[docker, waffleimage/centos7]'
-      - bundle exec rake litmus:install_agent
-      - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
-      services: docker
-      sudo: required
-
     -
       env: CHECK="syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop"
     -
@@ -95,66 +76,6 @@ matrix:
     -
       env: PUPPET_GEM_VERSION="~> 5.0" CHECK=parallel_spec
       rvm: 2.4.4
-    -
-      bundler_args:
-      dist: trusty
-      env: PUPPET6=ubuntu14.04
-      script:
-      - bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu14.04]'
-      # - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
-      - bundle exec rake litmus:install_agent
-      - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
-      services: docker
-      sudo: required
-    -
-      bundler_args:
-      dist: trusty
-      env: PUPPET6=ubuntu16.04
-      script:
-      - bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu16.04]'
-      # - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
-      - bundle exec rake litmus:install_agent
-      - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
-      services: docker
-      sudo: required
-    -
-      bundler_args:
-      dist: trusty
-      env: PUPPET6=ubuntu18.04
-      script:
-      - bundle exec rake 'litmus:provision[docker, waffleimage/ubuntu18.04]'
-      # - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
-      - bundle exec rake litmus:install_agent
-      - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
-      services: docker
-      sudo: required
-    -
-      bundler_args:
-      dist: trusty
-      env: PUPPET6=debian8
-      script:
-      - bundle exec rake 'litmus:provision[docker, waffleimage/debian8]'
-      # - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
-      - bundle exec rake litmus:install_agent
-      - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
-      services: docker
-      sudo: required
-    -
-      bundler_args:
-      dist: trusty
-      env: PUPPET6=debian9
-      script:
-      - bundle exec rake 'litmus:provision[docker, florindragos/debian9]'
-      # - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
-      - bundle exec rake litmus:install_agent
-      - bundle exec rake litmus:install_module
-      - time TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
-      services: docker
-      sudo: required
 branches:
   only:
     - master

@@ -80,12 +80,10 @@ class mysql::backup::mysqldump (
     content => template('mysql/mysqlbackup.sh.erb'),
   }
 
-  file { 'mysqlbackupdir':
+  file { $backupdir:
     ensure => 'directory',
-    path   => $backupdir,
     mode   => $backupdirmode,
     owner  => $backupdirowner,
     group  => $backupdirgroup,
   }
-
 }

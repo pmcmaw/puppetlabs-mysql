@@ -111,12 +111,10 @@ class mysql::backup::mysqlbackup (
     mode    => '0600',
   }
 
-  file { 'mysqlbackupdir':
+  file { $backupdir:
     ensure => 'directory',
-    path   => $backupdir,
     mode   => $backupdirmode,
     owner  => $backupdirowner,
     group  => $backupdirgroup,
   }
-
 }

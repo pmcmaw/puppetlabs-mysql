@@ -28,29 +28,29 @@ matrix:
       - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
       - bundle exec rake 'litmus:install_agent[puppet5]'
       - bundle exec rake litmus:install_module
-      - travis_wait 20 bundle exec rake litmus:acceptance:parallel
+      - travis_wait 30 bundle exec rake litmus:acceptance:parallel
       services: docker
       sudo: required
     -
       bundler_args:
       dist: trusty
-      env: PLATFORM=centos:deb_puppet6
+      env: PLATFORM=deb_puppet6
       rvm: 2.5.1
       script:
       - time bundle exec rake 'litmus:provision_list[travis_deb]'
       - bundle exec bolt command run 'apt-get install wget -y' --inventoryfile inventory.yaml --nodes='localhost*'
       - time bundle exec rake 'litmus:install_agent[puppet6]'
       - time bundle exec rake litmus:install_module
-      - travis_wait 20 bundle exec rake litmus:acceptance:parallel
+      - travis_wait 30 bundle exec rake litmus:acceptance:parallel
       services: docker
       sudo: required
     -
       bundler_args:
       dist: trusty
-      env: PLATFORMS=el_puppet5
+      env: PLATFORMS=el7_puppet5
       rvm: 2.5.1
       script:
-      - bundle exec rake 'litmus:provision_list[travis_el]'
+      - bundle exec rake 'litmus:provision_list[travis_el7]'
       - bundle exec rake 'litmus:install_agent[puppet5]'
       - bundle exec rake litmus:install_module
       - travis_wait 180 bundle exec rake litmus:acceptance:parallel
@@ -59,13 +59,85 @@ matrix:
     -
       bundler_args:
       dist: trusty
-      env: PLATFORM=centos:el_puppet6
+      env: PLATFORM=el7_puppet6
       rvm: 2.5.1
       script:
-      - bundle exec rake 'litmus:provision_list[travis_el]'
+      - bundle exec rake 'litmus:provision_list[travis_el7]'
       - bundle exec rake 'litmus:install_agent[puppet6]'
       - bundle exec rake litmus:install_module
       - travis_wait 180 bundle exec rake litmus:acceptance:parallel
+      services: docker
+      sudo: required
+    -
+      bundler_args:
+      dist: trusty
+      env: PLATFORM=centos6_puppet5
+      rvm: 2.5.1
+      script:
+      - bundle exec rake 'litmus:provision[docker, waffleimage/centos6]'
+      - bundle exec rake 'litmus:install_agent[puppet5]'
+      - bundle exec rake litmus:install_module
+      - TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
+      services: docker
+      sudo: required
+    -
+      bundler_args:
+      dist: trusty
+      env: PLATFORM=centos6_puppet6
+      rvm: 2.5.1
+      script:
+      - bundle exec rake 'litmus:provision[docker, waffleimage/centos6]'
+      - bundle exec rake 'litmus:install_agent[puppet6]'
+      - bundle exec rake litmus:install_module
+      - TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
+      services: docker
+      sudo: required
+    -
+      bundler_args:
+      dist: trusty
+      env: PLATFORM=scientificlinux6_puppet5
+      rvm: 2.5.1
+      script:
+      - bundle exec rake 'litmus:provision[docker, waffleimage/scientificlinux6]'
+      - bundle exec rake 'litmus:install_agent[puppet5]'
+      - bundle exec rake litmus:install_module
+      - TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
+      services: docker
+      sudo: required
+    -
+      bundler_args:
+      dist: trusty
+      env: PLATFORM=scientificlinux6_puppet6
+      rvm: 2.5.1
+      script:
+      - bundle exec rake 'litmus:provision[docker, waffleimage/scientificlinux6]'
+      - bundle exec rake 'litmus:install_agent[puppet6]'
+      - bundle exec rake litmus:install_module
+      - TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
+      services: docker
+      sudo: required
+    -
+      bundler_args:
+      dist: trusty
+      env: PLATFORM=oracleinux6_puppet5
+      rvm: 2.5.1
+      script:
+      - bundle exec rake 'litmus:provision[docker, waffleimage/oraclelinux6]'
+      - bundle exec rake 'litmus:install_agent[puppet5]'
+      - bundle exec rake litmus:install_module
+      - TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
+      services: docker
+      sudo: required
+    -
+      bundler_args:
+      dist: trusty
+      env: PLATFORM=oracleinux6_puppet6
+      rvm: 2.5.1
+      script:
+      - bundle exec rake 'litmus:provision[docker, waffleimage/oraclelinux6]'
+      - bundle exec rake 'litmus:install_agent[puppet6]'
+      - bundle exec rake litmus:install_module
+      - TARGET_HOST=localhost:2222 bundle exec rspec ./spec/acceptance/
       services: docker
       sudo: required
     -
@@ -76,8 +148,6 @@ matrix:
     -
       env: PUPPET_GEM_VERSION="~> 6.0" CHECK=parallel_spec
       rvm: 2.5.3
-    -
-      env: DEPLOY_TO_FORGE=yes
 branches:
   only:
     - master

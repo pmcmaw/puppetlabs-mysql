@@ -30,7 +30,6 @@ matrix:
       - bundle exec rake litmus:install_module
       - travis_wait 20 bundle exec rake litmus:acceptance:parallel
       services: docker
-      stage: acceptance
       sudo: required
     -
       bundler_args:
@@ -54,7 +53,7 @@ matrix:
       - bundle exec rake 'litmus:provision_list[travis_el]'
       - bundle exec rake 'litmus:install_agent[puppet5]'
       - bundle exec rake litmus:install_module
-      - travis_wait 60 bundle exec rake litmus:acceptance:parallel
+      - travis_wait 180 bundle exec rake litmus:acceptance:parallel
       services: docker
       sudo: required
     -
@@ -66,24 +65,19 @@ matrix:
       - bundle exec rake 'litmus:provision_list[travis_el]'
       - bundle exec rake 'litmus:install_agent[puppet6]'
       - bundle exec rake litmus:install_module
-      - travis_wait 60 bundle exec rake litmus:acceptance:parallel
+      - travis_wait 180 bundle exec rake litmus:acceptance:parallel
       services: docker
-      stage: acceptance
       sudo: required
     -
       env: CHECK="check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop syntax lint metadata_lint"
-      stage: static
     -
       env: PUPPET_GEM_VERSION="~> 5.0" CHECK=parallel_spec
       rvm: 2.4.5
-      stage: spec
     -
       env: PUPPET_GEM_VERSION="~> 6.0" CHECK=parallel_spec
       rvm: 2.5.3
-      stage: spec
     -
       env: DEPLOY_TO_FORGE=yes
-      stage: deploy
 branches:
   only:
     - master
